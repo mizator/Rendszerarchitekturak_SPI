@@ -19,24 +19,37 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module spi(
-    input MISO,
-    output MOSI,
-    output CLK,
-    output nSS,
-// in/out for wishbone??	
 
-	input  [7:0] in, 
-	output [7:0] out
+	input clk,
+	input rst,
+
+	// Internal signals
+	input [10:0] din, 	// Data from bus
+	input cmd, 			// Modify settings
+	input wr, 			// Write data
+	input rd, 			// Read data
+
+	output [ 8:0] dout, // Data to bus
+	output ack, 		// Acknowledge
+	output irq,			// Interrupt request
+
+	// SPI signals 
+    input  SPI_MISO,	// Master-In-Slave-Out	
+    output SPI_MOSI,	// Master-Out-Slave-In
+    output SPI_CLK,		// Bus-Clock
+    output SPI_nSS,		// Slave-Select
+
+	//input  [7:0] in, 
+	//output [7:0] out
 
     );
 //---------------------------------------------
 // Registers for SPI
 //---------------------------------------------
-reg [7:0] SPICR1;			//SPI CONTROL REGISTER 1
-reg [7:0] SPICR2;			//SPI CONTROL REGISTER 2
-reg [7:0] SPIBR;			//SPI BAUD-RATE REGISTER
-reg [7:0] SPISR;			//SPI STATUS REGISTER
-reg [7:0] SPIDR;			//SPI DATA REGISTER
+reg [7:0] SPICR;		//SPI CONTROL REGISTER 		[Global EN | Interrupt EN | Write EN | Read EN]	
+reg [7:0] SPIBR;		//SPI BAUD-RATE Registers	[4bit ]
+reg [7:0] SPISR;		//SPI STATUS REGISTER 		[BUSY (reg/wire??) | Interrupt Clear (state)? | ]
+reg [7:0] SPIDR;		//SPI DATA REGISTER 		[]
 //---------------------------------------------
 
 endmodule

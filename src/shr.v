@@ -42,14 +42,14 @@ begin
 	else if(ld)
 		shr <= ld_data;
 	else if(sh)
-		shr <= {din, shr[7:1]};					// miért van kétszer?
+		shr <= {din, shr[7:1]};					
 end
 //---------------------------------------------
 
 //---------------------------------------------
 // Output signal generation		
 //---------------------------------------------
-assign dstr = {din, shr[7:1]};					// miért van kétszer?
+assign dstr = {din, shr[7:1]};					
 assign dout = shr[0];
 //---------------------------------------------
 endmodule

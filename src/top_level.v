@@ -5,7 +5,7 @@
 // Create Date:    13:29:27 04/16/2017 
 // Design Name: 	Wishbone - Spi interface
 // Module Name:    	top_level 
-// Project Name: 	
+// Project Name: 	Wishbone - Spi interface
 // Target Devices: 
 // Tool versions: 
 // Description: 
@@ -37,12 +37,14 @@ module top_level(
     output spi_sck,			// Serial Clock
     output spi_ss,			// Slave Select
     input spi_miso			// Master In Slave Out
-    );
+);
 
 wire [10:0] dout;
 wire [ 8:0] din;
 wire cmd, wr, rd, ack;
-
+//---------------------------------------------
+// Wishbone interface module instantiation
+//---------------------------------------------
 wishbone_if wishbone_interface (
 	.clk(clk),
 	.rst(rst),
@@ -60,8 +62,12 @@ wishbone_if wishbone_interface (
 	.din(din),
 	.ack(ack)
 );
+//---------------------------------------------
 
-spi_if spi_interface (
+//---------------------------------------------
+// SPI Interface module instantiation
+//---------------------------------------------
+spi_if spi_interface(
 	.clk(clk),
 	.rst(rst),
 	.din(dout),
@@ -76,5 +82,5 @@ spi_if spi_interface (
 	.spi_ss(spi_ss),
 	.spi_miso(spi_miso)
 );
-
+//---------------------------------------------
 endmodule

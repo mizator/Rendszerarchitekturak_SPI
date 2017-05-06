@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module spi(
+module spi_if(
 	// General input signals
 	input clk,
 	input rst,
@@ -37,10 +37,7 @@ module spi(
     input  SPI_MISO,	// Master-In-Slave-Out	
     output SPI_MOSI,	// Master-Out-Slave-In
     output SPI_SCK,		// Bus-Clock
-    output SPI_nSS,		// Slave-Select
-
-	//input  [7:0] in, 
-	//output [7:0] out
+    output SPI_nSS		// Slave-Select
 );
 //---------------------------------------------
 // Registers for SPI
@@ -98,6 +95,7 @@ begin
 	else
 		ack_reg <= ;							//feltétel?
 end
+
 assign ack = ack_reg;
 //---------------------------------------------
 
@@ -130,6 +128,7 @@ begin
 		else if()
 		spi_ss_reg <= 1'b0;
 end
+
 assign SPI_nSS = spi_ss_reg;
 //---------------------------------------------
 
@@ -144,7 +143,7 @@ begin
 	else
 		irq_reg <= ;							// feltétel?
 end
+
 assign irq = irq_reg;
 //---------------------------------------------
-
 endmodule

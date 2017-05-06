@@ -61,7 +61,7 @@ end
 //---------------------------------------------
 // Output signal generation		
 //---------------------------------------------
-assign sck = (polarity == 1'b0) ? (sck_reg & en) : (~sck_reg & ~en);  //polarity-t kivenni!!!!
+assign sck 		= (sck_reg & en);  				// ? (sck_reg & en) : (~sck_reg & ~en);
 assign sck_rise = (~sck_reg) & (cntr == baudrate) & (en);
 assign sck_fall = ( sck_reg) & (cntr == baudrate) & (en);
 //---------------------------------------------

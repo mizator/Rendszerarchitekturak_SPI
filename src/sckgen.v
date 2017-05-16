@@ -19,13 +19,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module sckgen(
-	input clk, 				// System clock
-	input rst, 				// System reset
-	input en, 				// Enable clock generator
-	input [7:0] baudrate, 	// Baudrate divider
-	output sck, 			// SPI sck
-	output sck_rise, 		// sck rising edge
-	output sck_fall 		// sck falling edge
+	input 			clk, 		// System clock
+	input 			rst, 		// System reset
+	input 			en, 		// Enable clock generator
+	input 	[7:0] 	baudrate, 	// Baudrate divider
+	output 			sck, 		// SPI sck
+	output 			sck_rise, 	// sck rising edge
+	output 			sck_fall 	// sck falling edge
 );
 
 //---------------------------------------------

@@ -20,25 +20,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 module wishbone_if(
 	//System
-	input clk, 				// System Clock
-	input rst, 				// System Reset
+	input 			clk, 		// System Clock
+	input 			rst, 		// System Reset
 
 	// Wishbone
-	input [31:0] wb_addr, 	// Address
-	input wb_we, 			// Write Enable
-	input wb_stb, 			// Strobe
-	input wb_cyc, 			// Bus Cycle
-	input [31:0] wb_dout, 	// Bus to Slave
-	output [31:0] wb_din, 	// Slave to Bus
-	output wb_ack, 			// Acknowledge
+	input 	[31:0] 	wb_addr, 	// Address
+	input 			wb_we, 		// Write Enable
+	input 			wb_stb, 	// Strobe
+	input 			wb_cyc, 	// Bus Cycle
+	input 	[31:0] 	wb_dout, 	// Bus to Slave
+	output 	[31:0] 	wb_din, 	// Slave to Bus
+	output 			wb_ack, 	// Acknowledge
 	
 	// Internal
-	output [10:0] dout, 	// Bus to Slave
-	output cmd, 			// Modify Settings
-	output wr,				// Write Data
-	output rd, 				// Read Data
-	input [ 8:0] din, 		// Slave to Bus
-	input ack 				// Acknowledge
+	output 	[10:0] 	dout, 		// Bus to Slave
+	output 			cmd, 		// Modify Settings
+	output 			wr,			// Write Data
+	output 			rd, 		// Read Data
+	input 	[ 8:0] 	din, 		// Slave to Bus
+	input 			ack 		// Acknowledge
     );
 
 // Address decoder

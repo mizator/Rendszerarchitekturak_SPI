@@ -20,32 +20,32 @@
 //////////////////////////////////////////////////////////////////////////////////
 module sckgen_tb;
 // Inputs
-	reg clk = 1;
-    reg rst;
-    reg r_en;
-    reg [7:0] baudrate_data;
-	wire [7:0] baudrate;
-	wire sck;
+	reg 			clk;
+    reg 			rst;
+    reg 			r_en;
+    reg 	[7:0] 	baudrate_data;
+	wire 	[7:0] 	baudrate;
+	wire 			sck;
 
-	// Instantiate the Unit Under Test (UUT)
-	sckgen uut (
-		.clk(clk), 
-        .rst(rst),
-		.en(en),
-		.baudrate(baudrate), 
-		.sck(sck), 
-		.sck_rise(sck_rise), 
-		.sck_fall(sck_fall)
-	);
+// Instantiate the Unit Under Test (UUT)
+sckgen uut (
+	.clk(clk), 
+    .rst(rst),
+	.en(en),
+	.baudrate(baudrate), 
+	.sck(sck), 
+	.sck_rise(sck_rise), 
+	.sck_fall(sck_fall)
+);
 
-	initial begin
-		// Initialize Inputs
-		clk = 1;
-        rst = 1;
-        baudrate_data = 8'b0;
-        #102 rst = 0; 
-        #20 r_en = 1;
-	end
+initial begin
+	// Initialize Inputs
+	clk = 1;
+    rst = 1;
+    baudrate_data = 8'b0;
+    #102 rst = 0; 
+    #20 r_en = 1;
+end
 
 always #10 clk = ~clk;
 

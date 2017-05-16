@@ -20,24 +20,24 @@
 //////////////////////////////////////////////////////////////////////////////////
 module spi_if(
 	// General input signals
-	input clk,
-	input rst,
+	input 			clk,
+	input 			rst,
 
 	// Internal signals
-	input [10:0] din, 	// Data from bus
-	input cmd, 			// Modify settings
-	input wr, 			// Write data
-	input rd, 			// Read data
+	input 	[10:0] 	din, 		// Data from bus
+	input 			cmd, 		// Modify settings
+	input 			wr, 		// Write data
+	input 			rd, 		// Read data
 
-	output [ 8:0] dout, // Data to bus
-	output ack, 		// Acknowledge
-	output irq,			// Interrupt request
+	output 	[ 8:0] 	dout, 		// Data to bus
+	output 			ack, 		// Acknowledge
+	output 			irq,		// Interrupt request
 
 	// SPI signals 
-    input  SPI_MISO,	// Master-In-Slave-Out	
-    output SPI_MOSI,	// Master-Out-Slave-In
-    output SPI_SCK,		// Bus-Clock
-    output SPI_nSS		// Slave-Select
+    input  			SPI_MISO,	// Master-In-Slave-Out	
+    output 			SPI_MOSI,	// Master-Out-Slave-In
+    output 			SPI_SCK,	// Bus-Clock
+    output 			SPI_nSS		// Slave-Select
 );
 //---------------------------------------------
 // Registers for SPI

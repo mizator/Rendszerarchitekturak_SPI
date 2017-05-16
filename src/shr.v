@@ -19,16 +19,16 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module shr(
-	input clk,
-	input rst,
+	input 			clk,
+	input 			rst,
 
-	input din, 				// Data in
-	input sh, 				// Shift signal
-	input ld,				// Load signal
-	input [7:0] ld_data, 	// Data to load
+	input 			din, 		// Data in
+	input 			sh, 		// Shift signal
+	input 			ld,			// Load signal
+	input 	[7:0] 	ld_data, 	// Data to load
 
-	output dout, 			// Data out
-	output [7:0] dstr 		// Data to store
+	output 			dout, 		// Data out
+	output 	[7:0] 	dstr 		// Data to store
 );
 
 //---------------------------------------------

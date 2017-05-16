@@ -20,20 +20,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 module shr_tb;
 // Inputs
-	reg clk;
-    reg rst;
-    reg sh;
-    reg ld;
+	reg 			clk;
+    reg 			rst;
+    reg 			sh;
+    reg 			ld;
 
 
     // for feedback with dout
-    // wire din;
-    reg din;
+    //wire 			din;
+    // comment out for feedback
+    reg 			din;
         		
-    wire dout;
-    wire [7:0] dstr;
-    reg [7:0] load_data;
-    wire [7:0] ld_data;
+    wire 			dout;
+    wire 	[7:0] 	dstr;
+    reg 	[7:0] 	load_data;
+    wire 	[7:0] 	ld_data;
 
 	// Instantiate the Unit Under Test (UUT)
 	shr uut (

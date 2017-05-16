@@ -19,29 +19,29 @@
 //////////////////////////////////////////////////////////////////////////////////
 module top_level(
 	//System
-    input clk,				// System Clock
-    input rst,				// System Reset
-    output irq,				// Interrupt Request
+    input 			clk,		// System Clock
+    input 			rst,		// System Reset
+    output 			irq,		// Interrupt Request
 
     //Wishbone
-    input [31:0] wb_addr,	// Address
-    input wb_we,			// Write Enable
-    input wb_stb,			// Strobe
-    input wb_cyc,			// Bus Cycle
-    input [31:0] wb_dout,	// Bus to Slave Data
-    output [31:0] wb_din,	// Slave to Bus Data
-    output wb_ack,			// Acknowledge
+    input 	[31:0] 	wb_addr,	// Address
+    input 			wb_we,		// Write Enable
+    input 			wb_stb,		// Strobe
+    input 			wb_cyc,		// Bus Cycle
+    input 	[31:0] 	wb_dout,	// Bus to Slave Data
+    output 	[31:0] 	wb_din,		// Slave to Bus Data
+    output 			wb_ack,		// Acknowledge
 
     //SPI 
-    output spi_mosi,		// Master Out Slave In
-    output spi_sck,			// Serial Clock
-    output spi_ss,			// Slave Select
-    input spi_miso			// Master In Slave Out
+    output 			spi_mosi,	// Master Out Slave In
+    output 			spi_sck,	// Serial Clock
+    output 			spi_ss,		// Slave Select
+    input 			spi_miso	// Master In Slave Out
 );
 
-wire [10:0] dout;
-wire [ 8:0] din;
-wire cmd, wr, rd, ack;
+wire 		[10:0] 	dout;
+wire 		[ 8:0] 	din;
+wire 				cmd, wr, rd, ack;
 //---------------------------------------------
 // Wishbone interface module instantiation
 //---------------------------------------------

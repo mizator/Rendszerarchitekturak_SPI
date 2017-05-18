@@ -36,10 +36,12 @@ always @ (posedge clk)
 begin
 	if (rst)
 		cntr <= 8'b0;
-	else if(cntr == baudrate)
-		cntr <= 8'b0;
-	else if(en)
-		cntr <= cntr + 1'b1;
+	else if(en) begin
+		if(cntr == baudrate)		
+			cntr <= 8'b0;
+		else	
+			cntr <= cntr + 1'b1;
+	end
 end
 //---------------------------------------------
 

@@ -41,19 +41,20 @@ sckgen uut (
 initial begin
 	// Initialize Inputs
 	clk = 1;
+	 r_en = 0;
     rst = 1;
-    baudrate_data = 8'b0;
+    baudrate_data = 8'b1;
     #102 rst = 0; 
     #20 r_en = 1;
 end
 
 always #10 clk = ~clk;
 
-reg [2:0] cntr = 3'b0;
+reg [4:0] cntr = 5'b0;
 always @ (posedge sck)
 begin 
 	cntr = cntr + 1'b1;
-	if (cntr == 3'b111)
+	if (cntr == 5'b11111)
 	baudrate_data = baudrate_data + 1'b1; 
 end
 

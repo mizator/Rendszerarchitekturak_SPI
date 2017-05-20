@@ -63,6 +63,8 @@ begin
 					state_reg <= S_DIN;
 				else if (!cmd & !rd & wr)
 					state_reg <= S_DOUT;
+				else
+					state_reg <= S_IDLE;
 			end
 
 			default: S_IDLE;

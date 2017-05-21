@@ -54,7 +54,7 @@ top_level uut (
 	.spi_sck(spi_sck),
 	.spi_ss(spi_ss),
 	.spi_miso(spi_miso),
-	.spi_dint(spi_dint)
+	.irq(spi_dint)
 );
 //---------------------------------------------
 

@@ -53,10 +53,8 @@ parameter S_DIN = 3'b100; //Data out
 //---------------------------------------------
 // Registers for SPI
 //---------------------------------------------
-reg [7:0] SPICR;		//SPI CONTROL REGISTER 		[Global EN | Interrupt EN | Write EN | Read EN]
-reg [7:0] SPIBR;		//SPI BAUD-RATE Registers	[8bit]
-reg [7:0] SPISR;		//SPI STATUS REGISTER 		[BUSY (reg/wire??) | Interrupt Clear (state)? | ]
-reg [7:0] SPIDR;		//SPI DATA REGISTER 		[]
+reg [10:0] SPICR;		//SPI CONTROL REGISTER 		[Global EN | Interrupt EN | Interrupt Clear | baudrate[7:0]]
+reg [9:0] SPISR;		//SPI STATUS REGISTER 		[IRQreg | BUSY reg | data[7:0] ]
 //---------------------------------------------
 
 //---------------------------------------------
@@ -66,26 +64,63 @@ always @ (posedge clk)
 begin
 	if(rst) begin
 		SPICR <= 8'b0;
-		SPIBR <= 8'b0;
 	end
 	else if(cmd) begin
-		SPICR <= din[10:9];						// a bit kiosztást ki kell találni!!!
-		SPIBR <= din[ 7:0];
+		SPICR <= din;						// a bit kiosztást ki kell találni!!!
+	end
+	else if(wr) begin
+		SPISR <= din;
+		//todo: adatatvitel start
+	end
+	else if(rd) begin
 	end
 end
-//---------------------------------------------
 
+assign dout = SPISR;
+assign ack = 1;
 //---------------------------------------------
-// next_state_en signal generation
-//---------------------------------------------
-reg next_state_en;
+reg spi_ss_reg; // active low
+
+// 0 - Idle
+// 1 - start SS le, clk en
+// 2:9 - tx
+// 10 - stop SS fel, clk dis
+reg [3:0] state = 0;
 always @ (posedge clk)
 begin
-		if (rst)
-			next_state_en <= 1'b1;
-		else if (spi_state != S_IDLE)
-			next_state_en <= 1'b0;	
+ if(rst) begin
+	state <= 4'b0;
+	spi_ss_reg <= 1;
+ end
+ else begin
+ 	if (state == 0) begin // idle
+	 	if (wr && (SPICR[10])) begin
+	 		state <= 4'h1;
+			SPISR[8] <= 1; // BUSYreg
+		end
+	end
+	else if  (state == 4'h1)  begin // start
+		state <= 4'h2;
+		spi_ss_reg <= 0;
+	end
+	else if ((state >= 4'h2) & ((state <= 4'h9))) begin // tx
+		if (spi_sck_rise) begin // vagy fall?
+			state <= state + 1;
+		end
+	end
+	else if  (state == 4'hA)  begin // stop
+		state <= 4'h0;
+		if (SPICR[9] == 1) begin
+			SPISR[9] <= 1; // IRQreg
+		end
+		SPISR[8] <= 0; // BUSYreg
+		spi_ss_reg <= 1;
+	end
+ end
 end
+
+assign irq = (state == 4'hA);
+
 
 //---------------------------------------------
 // SCK frequency divider module instantiation
@@ -105,7 +140,7 @@ sckgen spi_sckgen (
 //---------------------------------------------
 // State logic instantiation
 //---------------------------------------------
-reg [2:0] spi_state;
+/*reg [2:0] spi_state;
 statelogic statelogic (
  	.clk(clk), 		// System clock
 	.rst(rst), 		// System reset
@@ -117,7 +152,7 @@ statelogic statelogic (
 	.next_state_en(next_state_en), //inkább kellene egy transmit_finished flag vagy ilyesmi
 	.state(spi_state)
 );
-//---------------------------------------------
+//---------------------------------------------*/
 
 //---------------------------------------------
 // SPI shift register module instantiation
@@ -135,50 +170,8 @@ shr spi_shr (
 );
 //---------------------------------------------
 
-//---------------------------------------------
-// Acknowledge signal generation
-//---------------------------------------------
-reg ack_reg;
-always @ (*)
-begin
-	if(rst || spi_state == S_IDLE)
-		ack_reg <= 1'b0;
-	else if ((spi_state != S_IDLE) && next_state_en)
-		ack_reg <= 1'b0;
-end
-
-assign ack = ack_reg;
-//---------------------------------------------
-
-//---------------------------------------------
-// Slave select signal generation
-//---------------------------------------------
-reg spi_ss_reg; // active low
-always @ (posedge clk)
-begin
-		if(rst)
-			spi_ss_reg <= 1'b1;
-		else if()								//mikor legyen az spi_ss 0/1 ?
-			spi_ss_reg <= 1'b1;
-		else if()
-		spi_ss_reg <= 1'b0;
-end
-
 assign SPI_nSS = spi_ss_reg;
 //---------------------------------------------
 
-//---------------------------------------------
-// Interrupt request signal generation
-//---------------------------------------------
-reg irq_reg;
-always @ (posedge clk)
-begin
-	if(rst)
-		irq_reg <= 1'b0;
-	else
-		irq_reg <= ;							// feltétel?
-end
-
-assign irq = irq_reg;
 //---------------------------------------------
 endmodule

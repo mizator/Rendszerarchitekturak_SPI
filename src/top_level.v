@@ -77,10 +77,10 @@ spi_if spi_interface(
 	.dout(din),
 	.ack(ack),
 	.irq(irq),
-	.spi_mosi(spi_mosi),
-	.spi_sck(spi_sck),
-	.spi_ss(spi_ss),
-	.spi_miso(spi_miso)
+	.SPI_MOSI(spi_mosi),
+	.SPI_SCK(spi_sck),
+	.SPI_nSS(spi_ss),
+	.SPI_MISO(spi_miso)
 );
 //---------------------------------------------
 endmodule

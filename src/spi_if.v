@@ -77,7 +77,6 @@ begin
 	else if(wr) begin
 		SPISR[7:0] <= din[7:0];
 		ack_reg <= 1'b1;
-		//todo: adatatvitel start
 	end
 	else if(rd) begin
 	ack_reg <= 1'b1;
@@ -90,6 +89,7 @@ end
 assign dout = SPISR;
 assign ack = ack_reg;
 //---------------------------------------------
+// state machine
 // 0 - Idle
 // 1 - start SS le, clk en
 // 2:9 - tx
@@ -121,7 +121,7 @@ begin
 		end
 	end
 	else if ((state >= 4'h2) && ((state <= 4'h9))) begin // tx
-		if (spi_sck_fall) begin // lefuto elre statevaltas
+		if (spi_sck_fall) begin // state change on falling edge
 			state <= state + 1;
 		end
 		if (SPICR[8]) begin //interrupt clear bit
@@ -130,7 +130,7 @@ begin
 	end
 	else if  (state == 4'hA)  begin // stop
 		state <= 4'h0;
-		if (SPICR[9] == 1) begin //ha interrupt engedelyezett
+		if (SPICR[9] == 1) begin //if interrupt enable set
 			SPISR[9] <= 1; // IRQreg
 		end
 		SPISR[8] <= 0; // BUSYreg

@@ -45,26 +45,12 @@ module wishbone_if(
 parameter ADDR_DATA = 32'h0000_0010;
 parameter ADDR_CMD = 32'h0000_0020;
 
-// Check for Strobe and Bus Cycle rising edge
 wire select;
 assign select = (wb_stb & wb_cyc);
 
-reg [1:0] select_reg;
-always @ (posedge clk)
-begin
-	if(rst)
-		select_reg <= 2'b0;
-	else
-		select_reg <= {select_reg[0], select};
-end
-
-wire select_rise;
-assign select_rise = ( select_reg == 2'b01 );
 
 // Assign outputs
-//assign wb_din = (select & ~wb_we & ack) ? {22'b0, din} : 32'bZ;
 assign wb_din = {22'b0, din};
-//assign wb_ack = (select) ? ack : 1'bZ;
 assign wb_ack = ack;
 assign dout = (select & wb_we) ? wb_dout[11:0] : 12'bZ;
 assign cmd = ((wb_addr ^ ADDR_CMD) == 32'b0) &  ( wb_we);

@@ -159,7 +159,8 @@ begin
 	wishbone_write(32'h0000_0010, 32'h0000_0015);   //data
 	wait(wb_din[9]);	//wait for interrupt
 	wishbone_write(32'h0000_0020, 32'hFFFF_F7FF); 	//int clr, SS=1
-	#6000000;
+	#6000000; 																			//minimum 5mS write cycle time
+
 	/* EEPROM read sequence */
 	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); 	//SS=0
 	wishbone_write(32'h0000_0010, 32'h0000_0003); 	// read instruction
@@ -168,41 +169,15 @@ begin
 	wishbone_write(32'h0000_0010, 32'h0000_0010);		//read address
 	wait(wb_din[9]);	//wait for interrupt
 	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
-	wishbone_write(32'h0000_0010, 32'h0000_0000);
+	wishbone_write(32'h0000_0010, 32'h0000_0000);		//MOSI=0, data read
 	wait(wb_din[9]);	//wait for interrupt
-	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF);
-	wishbone_write(32'h0000_0010, 32'h0000_0000);
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF);		//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0000);		//MOSI=0, data read
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF);		//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0000);		//MOSI=0, data read
 	wait(wb_din[9]);	//wait for interrupt
 	wishbone_write(32'h0000_0020, 32'hFFFF_F7FF); 	//int clr, SS=1
-
-
-	/*wishbone_read (32'h0000_0010);
-	#10;
-	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	// Set baudrate, int clr, int en, global en, ss=0
-	#10;
-	wishbone_write(32'h0000_0010, 32'h0000_000A);	// random data out
-	wait(wb_din[9]);
-	wishbone_write(32'h0000_0020, 32'hFFFF_F6FF); 	//clr interrupt, ss=1*/
-
-
-
-
-	//wishbone_write(32'h0000_0010, 32'h0000_0102); // Write instruction
-	//wishbone_write(32'h0000_0010, 32'h0000_00FE); // Write address
-	// sajatcucc wishbone_write(32'h0000_0010, 32'h0000_000B); // Write data
-	// Wait for the SPI write to end
-/*	while(~(wb_din === 32'h0000_0000))
-	begin
-		wishbone_write(32'h0000_0010, 32'h0000_0105); // Read status
-		wishbone_write(32'h0000_0010, 32'h0000_0600); // Receive answer
-		wait(spi_dint); // Wait for the answer
-		wishbone_read (32'h0000_0010); // Read answer
-	end
-		wishbone_write(32'h0000_0010, 32'h0000_0103); // Read instruction
-		wishbone_write(32'h0000_0010, 32'h0000_00FE); // Read address
-		wishbone_write(32'h0000_0010, 32'h0000_0600); // Receive answer
-		wait(spi_dint); // Wait for the answer
-		wishbone_read (32'h0000_0010); // Read answer*/
 end
 //---------------------------------------------
 endmodule

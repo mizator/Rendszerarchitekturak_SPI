@@ -137,18 +137,17 @@ begin
 		#200;
 		rst = 1'b0;
 		#5;
-	/* Push data */
+	/* EEPROM write sequence */
 	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); 	// Set baudrate, int clr =0, int en, global en, SS=0
 	wishbone_write(32'h0000_0010, 32'h0000_0006); 	// Write enable instruction
 	wait(wb_din[9]);	//wait for interrupt
 	wishbone_write(32'h0000_0020, 32'hFFFF_F3FF); 	//clr interrupt, SS=1
 	#70;
 	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF);   // SS=0
-	//wishbone_write(32'h0000_0020, 32'hFFFF_F6FF); 	//clr interrupt, SS=0
 	wishbone_write(32'h0000_0010, 32'h0000_0002); 	// Write command
 	wait(wb_din[9]);	//wait for interrupt
 	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
-	wishbone_write(32'h0000_0010, 32'h0000_0010);		// write address
+	wishbone_write(32'h0000_0010, 32'h0000_0010);		//write address
 	wait(wb_din[9]);	//wait for interrupt
 	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
 	wishbone_write(32'h0000_0010, 32'h0000_00F3);   //data
@@ -159,7 +158,23 @@ begin
 	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
 	wishbone_write(32'h0000_0010, 32'h0000_0015);   //data
 	wait(wb_din[9]);	//wait for interrupt
-	wishbone_write(32'h0000_0020, 32'hFFFF_F7FF); 	// Set baudrate, int clr, int en, global en, SS=1
+	wishbone_write(32'h0000_0020, 32'hFFFF_F7FF); 	//int clr, SS=1
+	#6000000;
+	/* EEPROM read sequence */
+	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); 	//SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0003); 	// read instruction
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0010);		//read address
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0000);
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF);
+	wishbone_write(32'h0000_0010, 32'h0000_0000);
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_F7FF); 	//int clr, SS=1
+
 
 	/*wishbone_read (32'h0000_0010);
 	#10;

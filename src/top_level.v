@@ -39,7 +39,7 @@ module top_level(
     input 			spi_miso	// Master In Slave Out
 );
 
-wire 		[10:0] 	dout;
+wire 		[11:0] 	dout;
 wire 		[ 9:0] 	din;
 wire 				cmd, wr, rd, ack;
 //---------------------------------------------

@@ -138,12 +138,17 @@ begin
 		rst = 1'b0;
 		#5;
 	/* Push data */
-	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); // Set baudrate
-	wishbone_write(32'h0000_0010, 32'h0000_000B);
+	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); 	// Set baudrate, int clr =0, int en, global en, ss=0
+	wishbone_write(32'h0000_0010, 32'h0000_000B); 	// random data out
 	//wishbone_write(32'h0000_0010, 32'h0000_0306); // Write enable instruction
-	while (~wb_din[9]) //wait for interrupt
-	#50;
-	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); //clr interrupt
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_read (32'h0000_0010);	
+	#10;
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	// Set baudrate, int clr, int en, global en, ss=0
+	#10;
+	wishbone_write(32'h0000_0010, 32'h0000_000A);	// random data out
+	wait(wb_din[9]);
+	wishbone_write(32'h0000_0020, 32'hFFFF_F6FF); 	//clr interrupt, ss=1
 	
 	//wishbone_write(32'h0000_0010, 32'h0000_0102); // Write instruction
 	//wishbone_write(32'h0000_0010, 32'h0000_00FE); // Write address

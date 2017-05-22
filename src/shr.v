@@ -42,14 +42,14 @@ begin
 	else if(ld)
 		shr <= ld_data;
 	else if(sh)
-		shr <= {din, shr[7:1]};					
+		shr <= {shr[6:0], din};					
 end
 //---------------------------------------------
 
 //---------------------------------------------
 // Output signal generation		
 //---------------------------------------------
-assign dstr = {din, shr[7:1]};					
-assign dout = shr[0];
+assign dstr = {shr[6:0], din};					
+assign dout = shr[7];
 //---------------------------------------------
 endmodule

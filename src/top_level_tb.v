@@ -138,13 +138,13 @@ begin
 		rst = 1'b0;
 		#5;
 	/* Push data */
-	wishbone_write(32'h0000_0020, 32'h0000_0203); // Set baudrate
-	wishbone_write(32'h0000_0010, 32'h0000_0306); // Write enable instruction
-	wishbone_write(32'h0000_0010, 32'h0000_0102); // Write instruction
-	wishbone_write(32'h0000_0010, 32'h0000_00FE); // Write address
-	wishbone_write(32'h0000_0010, 32'h0000_02D3); // Write data
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); // Set baudrate
+	//wishbone_write(32'h0000_0010, 32'h0000_0306); // Write enable instruction
+	//wishbone_write(32'h0000_0010, 32'h0000_0102); // Write instruction
+	//wishbone_write(32'h0000_0010, 32'h0000_00FE); // Write address
+	wishbone_write(32'h0000_0010, 32'h0000_000B); // Write data
 	// Wait for the SPI write to end
-	while(~(wb_din === 32'h0000_0000))
+/*	while(~(wb_din === 32'h0000_0000))
 	begin
 		wishbone_write(32'h0000_0010, 32'h0000_0105); // Read status
 		wishbone_write(32'h0000_0010, 32'h0000_0600); // Receive answer
@@ -155,7 +155,7 @@ begin
 		wishbone_write(32'h0000_0010, 32'h0000_00FE); // Read address
 		wishbone_write(32'h0000_0010, 32'h0000_0600); // Receive answer
 		wait(spi_dint); // Wait for the answer
-		wishbone_read (32'h0000_0010); // Read answer
+		wishbone_read (32'h0000_0010); // Read answer*/
 end
 //---------------------------------------------
 endmodule

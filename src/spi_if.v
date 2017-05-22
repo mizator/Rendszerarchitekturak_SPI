@@ -63,13 +63,13 @@ reg [9:0] SPISR;		//SPI STATUS REGISTER 		[IRQreg | BUSY reg | data[7:0] ]
 always @ (posedge clk)
 begin
 	if(rst) begin
-		SPICR <= 8'b0;
+		SPICR <= 11'b0;
 	end
 	else if(cmd) begin
 		SPICR <= din;						// a bit kiosztást ki kell találni!!!
 	end
 	else if(wr) begin
-		SPISR <= din;
+		SPISR[7:0] <= din[7:0];
 		//todo: adatatvitel start
 	end
 	else if(rd) begin
@@ -77,7 +77,7 @@ begin
 end
 
 assign dout = SPISR;
-assign ack = 1;
+assign ack = 1; //todo: valami ide
 //---------------------------------------------
 reg spi_ss_reg; // active low
 
@@ -97,18 +97,20 @@ begin
 	 	if (wr && (SPICR[10])) begin
 	 		state <= 4'h1;
 			SPISR[8] <= 1; // BUSYreg
+			SPISR[7:0] <= din[7:0];
 		end
 	end
 	else if  (state == 4'h1)  begin // start
 		state <= 4'h2;
 		spi_ss_reg <= 0;
 	end
-	else if ((state >= 4'h2) & ((state <= 4'h9))) begin // tx
+	else if ((state >= 4'h2) && ((state <= 4'hA))) begin // tx
 		if (spi_sck_rise) begin // vagy fall?
 			state <= state + 1;
+
 		end
 	end
-	else if  (state == 4'hA)  begin // stop
+	else if  (state == 4'hB)  begin // stop
 		state <= 4'h0;
 		if (SPICR[9] == 1) begin
 			SPISR[9] <= 1; // IRQreg
@@ -119,8 +121,9 @@ begin
  end
 end
 
+assign spi_load = (state == 4'h1);
 assign irq = (state == 4'hA);
-
+assign spi_shr_sh = ((state >= 4'h2) && (state <= 4'hA) && spi_sck_fall);
 
 //---------------------------------------------
 // SCK frequency divider module instantiation
@@ -130,29 +133,12 @@ sckgen spi_sckgen (
 	.clk(clk),
 	.rst(rst),
 	.en(~SPI_nSS),
-	.baudrate(SPIBR),
+	.baudrate(SPICR),
 	.sck(SPI_SCK),
 	.sck_rise(spi_sck_rise),
 	.sck_fall(spi_sck_fall)
 );
 //---------------------------------------------
-
-//---------------------------------------------
-// State logic instantiation
-//---------------------------------------------
-/*reg [2:0] spi_state;
-statelogic statelogic (
- 	.clk(clk), 		// System clock
-	.rst(rst), 		// System reset
-	.sck_rise(spi_sck_rise), // sck rising edge
- 	.sck_fall(spi_sck_fall), // sck falling edge
-	.cmd(cmd), 		// Modify settings
-	.wr(wr), 		// Write data
-	.rd(rd), 		// Read data
-	.next_state_en(next_state_en), //inkább kellene egy transmit_finished flag vagy ilyesmi
-	.state(spi_state)
-);
-//---------------------------------------------*/
 
 //---------------------------------------------
 // SPI shift register module instantiation
@@ -164,7 +150,7 @@ shr spi_shr (
 	.din(SPI_MISO),
 	.sh(spi_shr_sh),
 	.ld(spi_load),
-	.ld_data(),									//mit tegyünk az ld_data-ba?
+	.ld_data(SPISR[7:0]),									//mit tegyünk az ld_data-ba?
 	.dout(SPI_MOSI),
 	.dstr(spi_shr_dout)
 );

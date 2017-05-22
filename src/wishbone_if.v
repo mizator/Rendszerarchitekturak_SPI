@@ -1,21 +1,21 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    13:52:01 04/16/2017 
-// Design Name: 
-// Module Name:    wishbone_if 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
+// Company:
+// Engineer:
 //
-// Dependencies: 
+// Create Date:    13:52:01 04/16/2017
+// Design Name:
+// Module Name:    wishbone_if
+// Project Name:
+// Target Devices:
+// Tool versions:
+// Description:
 //
-// Revision: 
+// Dependencies:
+//
+// Revision:
 // Revision 0.01 - File Created
-// Additional Comments: 
+// Additional Comments:
 //
 //////////////////////////////////////////////////////////////////////////////////
 module wishbone_if(
@@ -31,7 +31,7 @@ module wishbone_if(
 	input 	[31:0] 	wb_dout, 	// Bus to Slave
 	output 	[31:0] 	wb_din, 	// Slave to Bus
 	output 			wb_ack, 	// Acknowledge
-	
+
 	// Internal
 	output 	[10:0] 	dout, 		// Bus to Slave
 	output 			cmd, 		// Modify Settings
@@ -53,7 +53,7 @@ reg [1:0] select_reg;
 always @ (posedge clk)
 begin
 	if(rst)
-		select_reg <= 2'b0;	
+		select_reg <= 2'b0;
 	else
 		select_reg <= {select_reg[0], select};
 end
@@ -65,8 +65,8 @@ assign select_rise = ( select_reg == 2'b01 );
 assign wb_din = (select & ~wb_we & ack) ? {23'b0, din} : 32'bZ;
 assign wb_ack = (select) ? ack : 1'bZ;
 assign dout = (select & wb_we) ? wb_dout[10:0] : 11'bZ;
-assign cmd = ((wb_addr ^ ADDR_CMD) == 32'b0) & (select_rise) & ( wb_we);
-assign wr = ((wb_addr ^ ADDR_DATA) == 32'b0) & (select_rise) & ( wb_we);
-assign rd = ((wb_addr ^ ADDR_DATA) == 32'b0) & (select_rise) & (~wb_we);
+assign cmd = ((wb_addr ^ ADDR_CMD) == 32'b0) &  ( wb_we);
+assign wr = ((wb_addr ^ ADDR_DATA) == 32'b0) &  ( wb_we);
+assign rd = ((wb_addr ^ ADDR_DATA) == 32'b0) &  (~wb_we);
 
 endmodule

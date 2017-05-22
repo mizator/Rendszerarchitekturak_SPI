@@ -1,21 +1,21 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:     13:52:01 04/16/2017 
+// Company:
+// Engineer:
+//
+// Create Date:     13:52:01 04/16/2017
 // Design Name: 	Wishbone - Spi interface
-// Module Name:     shr 
+// Module Name:     shr
 // Project Name: 	Wishbone - Spi interface
-// Target Devices: 
-// Tool versions: 
-// Description: 
+// Target Devices:
+// Tool versions:
+// Description:
 //
-// Dependencies: 
+// Dependencies:
 //
-// Revision: 
+// Revision:
 // Revision 0.01 - File Created
-// Additional Comments: 
+// Additional Comments:
 //
 //////////////////////////////////////////////////////////////////////////////////
 module shr(
@@ -32,7 +32,7 @@ module shr(
 );
 
 //---------------------------------------------
-// Shift-register block		
+// Shift-register block
 //---------------------------------------------
 reg [7:0] shr;
 always @ (posedge clk)
@@ -42,14 +42,14 @@ begin
 	else if(ld)
 		shr <= ld_data;
 	else if(sh)
-		shr <= {shr[6:0], din};					
+		shr <= {shr[6:0], din};
 end
 //---------------------------------------------
 
 //---------------------------------------------
-// Output signal generation		
+// Output signal generation
 //---------------------------------------------
-assign dstr = {shr[6:0], din};					
+assign dstr = shr;
 assign dout = shr[7];
 //---------------------------------------------
 endmodule

@@ -41,14 +41,7 @@ module spi_if(
 );
 
 //---------------------------------------------
-// States
-//---------------------------------------------
-parameter S_IDLE = 3'b000; //Idle
-parameter S_REG_RD = 3'b001; //Register read
-parameter S_REG_WR = 3'b010; //Register write
-parameter S_DOUT = 3'b011; //Data out
-parameter S_DIN = 3'b100; //Data out
-//---------------------------------------------
+
 
 //---------------------------------------------
 // Registers for SPI
@@ -66,7 +59,7 @@ begin
 		SPICR <= 11'b0;
 	end
 	else if(cmd) begin
-		SPICR <= din;						// a bit kiosztást ki kell találni!!!
+		SPICR <= din;
 	end
 	else if(wr) begin
 		SPISR[7:0] <= din[7:0];
@@ -91,28 +84,37 @@ begin
  if(rst) begin
 	state <= 4'b0;
 	spi_ss_reg <= 1;
+	SPISR[9:8] <= 2'b0;
  end
  else begin
  	if (state == 0) begin // idle
 	 	if (wr && (SPICR[10])) begin
 	 		state <= 4'h1;
 			SPISR[8] <= 1; // BUSYreg
-			SPISR[7:0] <= din[7:0];
+			SPISR[7:0] <= din[7:0]; //data from wishbone to data register
+			if (SPICR[8]) begin //interrupt clear bit
+				SPISR[9] <= 0;
+			end
 		end
 	end
 	else if  (state == 4'h1)  begin // start
 		state <= 4'h2;
 		spi_ss_reg <= 0;
-	end
-	else if ((state >= 4'h2) && ((state <= 4'hA))) begin // tx
-		if (spi_sck_rise) begin // vagy fall?
-			state <= state + 1;
-
+		if (SPICR[8]) begin //interrupt clear bit
+			SPISR[9] <= 0;
 		end
 	end
-	else if  (state == 4'hB)  begin // stop
+	else if ((state >= 4'h2) && ((state <= 4'h9))) begin // tx
+		if (spi_sck_fall) begin // lefuto elre statevaltas
+			state <= state + 1;
+		end
+		if (SPICR[8]) begin //interrupt clear bit
+			SPISR[9] <= 0;
+		end
+	end
+	else if  (state == 4'hA)  begin // stop
 		state <= 4'h0;
-		if (SPICR[9] == 1) begin
+		if (SPICR[9] == 1) begin //ha interrupt engedelyezett
 			SPISR[9] <= 1; // IRQreg
 		end
 		SPISR[8] <= 0; // BUSYreg
@@ -122,7 +124,7 @@ begin
 end
 
 assign spi_load = (state == 4'h1);
-assign irq = (state == 4'hA);
+assign irq = SPISR[9];
 assign spi_shr_sh = ((state >= 4'h2) && (state <= 4'hA) && spi_sck_fall);
 
 //---------------------------------------------
@@ -133,7 +135,7 @@ sckgen spi_sckgen (
 	.clk(clk),
 	.rst(rst),
 	.en(~SPI_nSS),
-	.baudrate(SPICR),
+	.baudrate(SPICR[7:0]),
 	.sck(SPI_SCK),
 	.sck_rise(spi_sck_rise),
 	.sck_fall(spi_sck_fall)

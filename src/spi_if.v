@@ -53,24 +53,32 @@ reg [9:0] SPISR;		//SPI STATUS REGISTER 		[IRQreg | BUSY reg | data[7:0] ]
 //---------------------------------------------
 // Register value settings
 //---------------------------------------------
+reg ack_reg;
 always @ (posedge clk)
 begin
 	if(rst) begin
 		SPICR <= 11'b0;
+		ack_reg <= 1'b0;
 	end
 	else if(cmd) begin
 		SPICR <= din;
+		ack_reg <= 1'b1;
 	end
 	else if(wr) begin
 		SPISR[7:0] <= din[7:0];
+		ack_reg <= 1'b1;
 		//todo: adatatvitel start
 	end
 	else if(rd) begin
+	ack_reg <= 1'b1;
+	end
+	else begin
+	ack_reg <= 1'b0;
 	end
 end
 
 assign dout = SPISR;
-assign ack = 1; //todo: valami ide
+assign ack = ack_reg;
 //---------------------------------------------
 reg spi_ss_reg; // active low
 
@@ -91,10 +99,10 @@ begin
 	 	if (wr && (SPICR[10])) begin
 	 		state <= 4'h1;
 			SPISR[8] <= 1; // BUSYreg
-			SPISR[7:0] <= din[7:0]; //data from wishbone to data register
-			if (SPICR[8]) begin //interrupt clear bit
-				SPISR[9] <= 0;
-			end
+			SPISR[7:0] <= din[7:0]; //data from wishbone to data register	
+		end
+		if (SPICR[8]) begin //interrupt clear bit
+			SPISR[9] <= 0;
 		end
 	end
 	else if  (state == 4'h1)  begin // start

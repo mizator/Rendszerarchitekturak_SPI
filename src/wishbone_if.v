@@ -37,7 +37,7 @@ module wishbone_if(
 	output 			cmd, 		// Modify Settings
 	output 			wr,			// Write Data
 	output 			rd, 		// Read Data
-	input 	[ 8:0] 	din, 		// Slave to Bus
+	input 	[9:0] 	din, 		// Slave to Bus
 	input 			ack 		// Acknowledge
     );
 
@@ -62,8 +62,10 @@ wire select_rise;
 assign select_rise = ( select_reg == 2'b01 );
 
 // Assign outputs
-assign wb_din = (select & ~wb_we & ack) ? {23'b0, din} : 32'bZ;
-assign wb_ack = (select) ? ack : 1'bZ;
+//assign wb_din = (select & ~wb_we & ack) ? {22'b0, din} : 32'bZ;
+assign wb_din = {21'b0, din};
+//assign wb_ack = (select) ? ack : 1'bZ;
+assign wb_ack = ack;
 assign dout = (select & wb_we) ? wb_dout[10:0] : 11'bZ;
 assign cmd = ((wb_addr ^ ADDR_CMD) == 32'b0) &  ( wb_we);
 assign wr = ((wb_addr ^ ADDR_DATA) == 32'b0) &  ( wb_we);

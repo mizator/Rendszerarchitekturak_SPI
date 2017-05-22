@@ -40,7 +40,7 @@ module top_level(
 );
 
 wire 		[10:0] 	dout;
-wire 		[ 8:0] 	din;
+wire 		[ 9:0] 	din;
 wire 				cmd, wr, rd, ack;
 //---------------------------------------------
 // Wishbone interface module instantiation

@@ -138,11 +138,16 @@ begin
 		rst = 1'b0;
 		#5;
 	/* Push data */
-	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); // Set baudrate
+	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); // Set baudrate
+	wishbone_write(32'h0000_0010, 32'h0000_000B);
 	//wishbone_write(32'h0000_0010, 32'h0000_0306); // Write enable instruction
+	while (~wb_din[9]) //wait for interrupt
+	#50;
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); //clr interrupt
+	
 	//wishbone_write(32'h0000_0010, 32'h0000_0102); // Write instruction
 	//wishbone_write(32'h0000_0010, 32'h0000_00FE); // Write address
-	wishbone_write(32'h0000_0010, 32'h0000_000B); // Write data
+	// sajatcucc wishbone_write(32'h0000_0010, 32'h0000_000B); // Write data
 	// Wait for the SPI write to end
 /*	while(~(wb_din === 32'h0000_0000))
 	begin

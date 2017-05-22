@@ -1,21 +1,21 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    01:00:02 05/06/2017 
+// Company:
+// Engineer:
+//
+// Create Date:    01:00:02 05/06/2017
 // Design Name:		Wishbone - Spi interface
 // Module Name:     top_level_tb
 // Project Name: 	Wishbone - Spi interface
-// Target Devices: 
-// Tool versions: 
-// Description: 
+// Target Devices:
+// Tool versions:
+// Description:
 //
-// Dependencies: 
+// Dependencies:
 //
-// Revision: 
+// Revision:
 // Revision 0.01 - File Created
-// Additional Comments: 
+// Additional Comments:
 //
 //////////////////////////////////////////////////////////////////////////////////
 module top_level_tb;
@@ -129,7 +129,7 @@ end
 //---------------------------------------------
 
 //---------------------------------------------
-initial 
+initial
 begin
 	/* RESET */
 		#200;
@@ -138,18 +138,40 @@ begin
 		rst = 1'b0;
 		#5;
 	/* Push data */
-	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); 	// Set baudrate, int clr =0, int en, global en, ss=0
-	wishbone_write(32'h0000_0010, 32'h0000_000B); 	// random data out
-	//wishbone_write(32'h0000_0010, 32'h0000_0306); // Write enable instruction
+	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF); 	// Set baudrate, int clr =0, int en, global en, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0006); 	// Write enable instruction
 	wait(wb_din[9]);	//wait for interrupt
-	wishbone_read (32'h0000_0010);	
+	wishbone_write(32'h0000_0020, 32'hFFFF_F3FF); 	//clr interrupt, SS=1
+	#70;
+	wishbone_write(32'h0000_0020, 32'hFFFF_FEFF);   // SS=0
+	//wishbone_write(32'h0000_0020, 32'hFFFF_F6FF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0002); 	// Write command
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0010);		// write address
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_00F3);   //data
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0021);   //data
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	//clr interrupt, SS=0
+	wishbone_write(32'h0000_0010, 32'h0000_0015);   //data
+	wait(wb_din[9]);	//wait for interrupt
+	wishbone_write(32'h0000_0020, 32'hFFFF_F7FF); 	// Set baudrate, int clr, int en, global en, SS=1
+
+	/*wishbone_read (32'h0000_0010);
 	#10;
 	wishbone_write(32'h0000_0020, 32'hFFFF_FFFF); 	// Set baudrate, int clr, int en, global en, ss=0
 	#10;
 	wishbone_write(32'h0000_0010, 32'h0000_000A);	// random data out
 	wait(wb_din[9]);
-	wishbone_write(32'h0000_0020, 32'hFFFF_F6FF); 	//clr interrupt, ss=1
-	
+	wishbone_write(32'h0000_0020, 32'hFFFF_F6FF); 	//clr interrupt, ss=1*/
+
+
+
+
 	//wishbone_write(32'h0000_0010, 32'h0000_0102); // Write instruction
 	//wishbone_write(32'h0000_0010, 32'h0000_00FE); // Write address
 	// sajatcucc wishbone_write(32'h0000_0010, 32'h0000_000B); // Write data
